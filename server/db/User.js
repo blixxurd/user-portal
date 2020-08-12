@@ -7,11 +7,13 @@ module.exports = (mongoose) => {
     const User = new Schema({
         username: {
             type: String,
-            unique: true
+            unique: true,
+            lowercase: true
         },
         email: {
             type: String,
-            unique: true
+            unique: true,
+            lowercase: true
         },
         password: String
     }, {timestamps: true});

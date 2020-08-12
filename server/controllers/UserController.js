@@ -4,7 +4,6 @@ class UserController {
 
     static create({username, password, email}) {
         return new Promise((resolve, reject) => {
-            console.log({username, password, email})
             const user = new User({ username, password, email});
             user.save().then(resolve).catch(reject);
         });
