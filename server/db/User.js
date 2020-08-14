@@ -14,7 +14,15 @@ module.exports = (mongoose) => {
 			unique: true,
 			lowercase: true
 		},
-		password: String
+		password: String,
+		rights: {
+			type: Number,
+			max: 2
+		},
+		verified: {
+			type: Boolean,
+			default: false,
+		}
 	}, {timestamps: true});
 
 	/**
@@ -22,6 +30,16 @@ module.exports = (mongoose) => {
   */
 	User.pre('save', function() {
 		this.password = bcrypt.hashSync(this.password, 10);
+	});
+
+	/** 
+		Send verification email after save
+	 */
+	User.post('save', function() {
+		if(!this.verified) {
+			console.log(`Sending verification email to ${this.email}`);
+			// TODO - Send an email after save, but only if the account is not verified
+		}
 	});
 
 	return mongoose.model('User', User);

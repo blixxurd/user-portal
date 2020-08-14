@@ -30,11 +30,11 @@ beforeAll(async () => {
 	});
 });
 
-test('register user', async () => {
+test('register user & create profile', async () => {
 	let newUser = await UserController.create(user);
-	console.log(newUser);
-	expect(newUser).toHaveProperty('_id');
-	expect(newUser).toHaveProperty('username', user.username.toLowerCase());
+	expect(newUser[0]).toHaveProperty('_id');
+	expect(newUser[0]).toHaveProperty('username', user.username.toLowerCase());
+	expect(newUser[1]).toHaveProperty('_id'); // Profile generation
 });
 
 test('authenticate user', async () => {
