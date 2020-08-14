@@ -18,10 +18,9 @@ module.exports = (mongoose) => {
 	}, {timestamps: true});
 
 	/**
-     * Hash password before save
-     */
+    Hash password before save
+  */
 	User.pre('save', function() {
-		//console.log(this);
 		this.password = bcrypt.hashSync(this.password, 10);
 	});
 
