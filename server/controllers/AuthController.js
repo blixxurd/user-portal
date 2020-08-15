@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 
 class AuthController {
 
+	/**
+   * 
+   * @param {*} username 
+   * @param {*} password 
+   */
 	static authenticate(username, password) {
 		return new Promise((resolve, reject) => {
 			User.findOne({username}).then(u => {
@@ -29,6 +34,10 @@ class AuthController {
 		});
 	}
 
+	/**
+   * Verify the authenticity of a user's JWT Token
+   * @param {*} token 
+   */
 	static verifyToken(token) {
 		return new Promise((resolve, reject) => {
 			jwt.verify(token, process.env.AUTH_KEY, (err, decoded) => {

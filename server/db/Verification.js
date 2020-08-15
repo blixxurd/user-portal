@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = (mongoose) => {
+
 	const Schema = mongoose.Schema;
 	const Verification = new Schema({
 		user_id: {
@@ -17,9 +18,16 @@ module.exports = (mongoose) => {
 		meta: Schema.Types.Mixed,
 		expires: {
 			type: Date,
-			default: Date.now()
+			default: new Date(new Date().getTime() + 60 * 60 * 24 * 1000)
 		}
 	}, {timestamps: true});
+  
+	Verification.virtual('isExpired').get(function() {
+		let now = new Date();
+		let expiry = new Date(this.expires);
+		return now > expiry;
+	});
 
 	return mongoose.model('Verification', Verification);
+
 };

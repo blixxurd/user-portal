@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { AppMiddleware } = require('../middleware');
 const { AuthController, UserController } = require('../controllers');
 
 
 
 module.exports = ({ mid }) => {
 
-	router.post('/register', AppMiddleware.validateRegistration, (req, res, next) => {
+	router.post('/register', mid.validateRegistration, (req, res, next) => {
 		const user = {
 			username: req.body.username, 
 			password: req.body.password,
@@ -17,7 +16,7 @@ module.exports = ({ mid }) => {
 			return res.json({errors: req.errors, errorType: 'soft', status: 200});
 		} else {
 			UserController.create(user).then(authMember => {
-				return res.json({userId: authMember._id, email: authMember.email});
+				return res.json(authMember);
 			}).catch(e => {
 				if(!!e.code && e.code == 11000) {
 					// Duplicate
@@ -30,11 +29,32 @@ module.exports = ({ mid }) => {
 		}
 	});
 
-	router.post('/auth', (req, res, next) => {
+	router.post('/login', (req, res, next) => {
 		AuthController.authenticate(req.body.username, req.body.password).then(authDetail => {
 			return res.json(authDetail);
 		}).catch(next);
 	});
+
+	router.post('/activate', (req, res) => {
+		// Activates account
+		return res.json({activation: 'activation'});
+	});
+
+	router.post('/forgot-password', (req, res) => {
+		// Triggers password reset
+		return res.json({activation: 'activation'});
+	});
+
+	router.post('/reset-password', (req, res) => {
+		// Triggers password reset
+		return res.json({activation: 'activation'});
+	});
+
+	router.post('/update-profile', mid.authorizeUser, (req, res) => {
+		// Updates profile
+		return res.json({activation: 'activation'});
+	});
+
 
 	router.get('/user', mid.authorizeUser, (req, res, next) => {
 		UserController.getUser(res.locals.user.id).then(user => {

@@ -24,22 +24,20 @@ module.exports = (mongoose) => {
 			default: false,
 		}
 	}, {timestamps: true});
+  
+	User.virtual('responseData').get(function() {
+		return {
+			username: this.username,
+			verified: this.verified,
+			updatedAt: this.updatedAt
+		};
+	});
 
 	/**
     Hash password before save
   */
 	User.pre('save', function() {
 		this.password = bcrypt.hashSync(this.password, 10);
-	});
-
-	/** 
-		Send verification email after save
-	 */
-	User.post('save', function() {
-		if(!this.verified) {
-			console.log(`Sending verification email to ${this.email}`);
-			// TODO - Send an email after save, but only if the account is not verified
-		}
 	});
 
 	return mongoose.model('User', User);

@@ -4,10 +4,12 @@ const { AuthController } = require('../controllers');
 class AppMiddleware {
 
 	static catchNotFound(req, res, next) {
+		console.log('404 Handler Initiated.');
 		next(createError(404));
 	}
 
 	static handleErrors(err, req, res) {
+		console.log('Error Response Initiated.');
 		res.locals.status = err.status || 500;
 		res.status(res.locals.status);
 		res.json({
