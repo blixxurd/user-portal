@@ -37,7 +37,9 @@ module.exports = (mongoose) => {
     Hash password before save
   */
 	User.pre('save', function() {
-		this.password = bcrypt.hashSync(this.password, 10);
+		if (this.isModified('password')) {
+			this.password = bcrypt.hashSync(this.password, 10);
+		}
 	});
 
 	return mongoose.model('User', User);

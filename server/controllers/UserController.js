@@ -1,5 +1,6 @@
 const { User, Profile } = require('../db');
 const VerificationController = require('./VerificationController');
+const { ApiError } = require('../helpers/ErrorHandlers');
 
 class UserController {
 
@@ -32,19 +33,44 @@ class UserController {
 		});
 	}
 
-	// static updateUser({password, email}) {
-	// 	return new Promise((resolve, reject) => {
-	// 		// If password is updated, we should created a 
+	static updateUser(id, {password, email}) {
+		return new Promise((resolve, reject) => {
+			User.findOne({_id: id}).then(async u => {
+				let updates = {
+					pending: [],
+					complete: []
+				};
+				if(!!email && (email !== u.email)) {
+					// Email address Change
+					VerificationController.sendEmailVerification(u, email);
+					updates.pending.push('email');
+				}
+				if(password) {
+					u.password = password;
+					updates.complete.push('password');
+				}
 
-	// 		// If email is updated, we should
-	// 	});
-	// }
+				if(updates.pending.length == 0 && updates.complete.length == 0) {
+					return reject(new ApiError(500, 'No inputs recieved.'));
+				}
+				try {
+					await u.save();
+					return resolve(updates);
+				} catch(e) {
+					return reject(e);
+				}
+			}).catch(reject);
+		});
+	}
 
-	// static updateProfile(profileData) {
-	// 	return new Promise((resolve, reject) => {
-            
-	// 	});
-	// }
+	static updateProfile(id, profileData) {
+		return new Promise((resolve, reject) => {
+			if(!id || !profileData) {
+				return reject(new ApiError(500, 'Missing Fields. Please Provide and ID & Profile Data'));
+			}
+			Profile.findOneAndUpdate({user_id: id}, profileData, {new: true}).then(resolve).catch(reject);
+		});
+	}
 
 	// static updatePasswordFromVerification() {
 	// 	return new Promise((resolve, reject) => {
@@ -58,7 +84,7 @@ class UserController {
    */
 	static getProfile(id) {
 		return new Promise((resolve, reject) => {
-			User.findOne({_id: id}).select(fields).then(resolve).catch(reject);
+		
 		});
 	}
 

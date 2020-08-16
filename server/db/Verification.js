@@ -13,7 +13,7 @@ module.exports = (mongoose) => {
 		},
 		verification_type: {
 			type: String,
-			enum: ['password-change', 'new-account', 'email-change'],
+			enum: ['password-recovery', 'new-account', 'email-change'],
 		},
 		meta: Schema.Types.Mixed,
 		expires: {
@@ -26,6 +26,10 @@ module.exports = (mongoose) => {
 		let now = new Date();
 		let expiry = new Date(this.expires);
 		return now > expiry;
+	});
+  
+	Verification.virtual('hasEmailMeta').get(function() {
+		return !!this.meta && this.meta.newEmail && this.meta.oldEmail;
 	});
 
 	return mongoose.model('Verification', Verification);

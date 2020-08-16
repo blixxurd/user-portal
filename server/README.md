@@ -69,7 +69,6 @@ This helper enforces an error standard that is consistent across the app.
 
 # Remaining Work
 - Forgot Password Email
-- Password Reset 
-- Profile Field Updates
-- Logger (Nice to have) 
+- Password Reset
+- Logger (Nice to have)
 

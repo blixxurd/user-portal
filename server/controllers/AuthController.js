@@ -17,6 +17,7 @@ class AuthController {
 					token: null
 				};
 				if(u) {
+					console.log(`Found user with '${username}`);
 					const valid = bcrypt.compareSync(password, u.password);
 					if(valid) {
 						payload.valid = valid;

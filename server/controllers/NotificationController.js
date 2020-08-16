@@ -99,6 +99,23 @@ class NotificationsController {
 			templateVars
 		});
 	}
+  
+	/**
+   * Sends an email change verification email
+   * @param {Object} user User object, must include email & username.
+   * @param {String} activationKey UUIDv4 Key for Verification DB Entry.
+   */
+	sendEmailChange(newEmail, activationKey) {
+		const templateVars = {
+			action_url: `${process.env.WEBSITE_URL}/actions/${activationKey}`,
+		};
+		return this.sendMailFromTemplate({
+			to: newEmail,
+			subject: 'Please Verify Your New Email Address',
+			templateName: 'email-change',
+			templateVars
+		});
+	}
 
 }
 

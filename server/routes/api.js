@@ -36,18 +36,26 @@ module.exports = ({ mid }) => {
 	});
 
 	router.post('/forgot-password', (req, res) => {
-		// Triggers password reset
+		// Triggers password reset email
 		return res.json({activation: 'activation'});
 	});
 
 	router.post('/reset-password', (req, res) => {
-		// Triggers password reset
+		// Changes password
 		return res.json({activation: 'activation'});
 	});
+  
+	router.post('/update-user', mid.authorizeUser, (req, res, next) => {
+		//Updates user from authenticated state
+		UserController.updateUser(res.locals.user.id, req.body).then(updateResponse => {
+			return res.json(updateResponse);
+		}).catch(next);
+	});
 
-	router.post('/update-profile', mid.authorizeUser, (req, res) => {
-		// Updates profile
-		return res.json({activation: 'activation'});
+	router.post('/update-profile', mid.authorizeUser, (req, res, next) => {
+		UserController.updateProfile(res.locals.user.id, req.body).then(updatedProfile => {
+			return res.json(updatedProfile);
+		}).catch(next);
 	});
 
 
