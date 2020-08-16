@@ -35,11 +35,6 @@ module.exports = ({ mid }) => {
 		}).catch(next);
 	});
 
-	router.post('/activate', (req, res) => {
-		// Activates account
-		return res.json({activation: 'activation'});
-	});
-
 	router.post('/forgot-password', (req, res) => {
 		// Triggers password reset
 		return res.json({activation: 'activation'});

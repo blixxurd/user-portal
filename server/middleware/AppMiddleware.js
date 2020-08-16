@@ -1,21 +1,23 @@
-const createError = require('http-errors');
 const { AuthController } = require('../controllers');
+const { ApiError } = require('../helpers/ErrorHandlers');
 
 class AppMiddleware {
 
 	static catchNotFound(req, res, next) {
 		console.log('404 Handler Initiated.');
-		next(createError(404));
+		next(new ApiError(404, 'Not Found'));
 	}
 
-	static handleErrors(err, req, res) {
+	// eslint-disable-next-line no-unused-vars
+	static handleErrors(err, req, res, next) {
 		console.log('Error Response Initiated.');
-		res.locals.status = err.status || 500;
-		res.status(res.locals.status);
-		res.json({
-			errors: [err.message || 'Unidentified Error'],
-			status: res.locals.status,
-			errorType: 'hard'
+		// If it's not already an API error, we should make it one. 
+		if(err.name !== 'ApiError') {
+			err = new ApiError(err.status || 500, err.message, err);
+		}
+		return res.status(err.status).json({
+			errors: err.messages,
+			state: err.name
 		});
 	}
 
@@ -30,7 +32,7 @@ class AppMiddleware {
 				next(err);
 			});
 		} else {
-			next(createError(401));
+			next(new ApiError(401, 'No authorization token provided.'));
 		}
 	}
 
