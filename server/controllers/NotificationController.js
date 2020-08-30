@@ -89,7 +89,7 @@ class NotificationsController {
    */
 	sendActivationEmail(user, activationKey) {
 		const templateVars = {
-			action_url: `${process.env.WEBSITE_URL}/actions/activate/${activationKey}`,
+			action_url: `${process.env.WEBSITE_URL}/actions/${activationKey}`,
 			name: user.username
 		};
 		return this.sendMailFromTemplate({
@@ -113,6 +113,23 @@ class NotificationsController {
 			to: newEmail,
 			subject: 'Please Verify Your New Email Address',
 			templateName: 'email-change',
+			templateVars
+		});
+	}
+  
+	/**
+   * Sends password reset email
+   * @param {Object} u User object, must include email & username.
+   * @param {String} activationKey UUIDv4 Key for Verification DB Entry.
+   */
+	sendPasswordReset(u, activationKey) {
+		const templateVars = {
+			action_url: `${process.env.WEBSITE_URL}/actions/${activationKey}`,
+		};
+		return this.sendMailFromTemplate({
+			to: u.email,
+			subject: 'Your Password Reset Request',
+			templateName: 'password-recovery',
 			templateVars
 		});
 	}

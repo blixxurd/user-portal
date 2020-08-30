@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { AuthController, UserController } = require('../controllers');
+const { AuthController, UserController, VerificationController } = require('../controllers');
 
 
 
@@ -35,33 +35,43 @@ module.exports = ({ mid }) => {
 		}).catch(next);
 	});
 
-	router.post('/forgot-password', (req, res) => {
-		// Triggers password reset email
-		return res.json({activation: 'activation'});
+	router.post('/recovery/forgot-password', (req, res, next) => {
+		UserController.recoverPassword(req.body.email).then(recovery => {
+			return res.json(recovery);
+		}).catch(next);
 	});
 
-	router.post('/reset-password', (req, res) => {
-		// Changes password
-		return res.json({activation: 'activation'});
+	router.post('/recovery/reset-password', mid.validatePasswordChange, (req, res, next) => {
+		if(req.errors.length > 0) {
+			return res.json({errors: req.errors, errorType: 'soft', status: 200});
+		} else {
+			VerificationController.updatePasswordFromVerification(req.body.token, req.body.password).then(r => {
+				return res.json(r);
+			}).catch(next);
+		}
 	});
   
-	router.post('/update-user', mid.authorizeUser, (req, res, next) => {
-		//Updates user from authenticated state
+	router.post('/user/update-user', mid.authorizeUser, (req, res, next) => {
 		UserController.updateUser(res.locals.user.id, req.body).then(updateResponse => {
 			return res.json(updateResponse);
 		}).catch(next);
 	});
 
-	router.post('/update-profile', mid.authorizeUser, (req, res, next) => {
+	router.post('/user/update-profile', mid.authorizeUser, (req, res, next) => {
 		UserController.updateProfile(res.locals.user.id, req.body).then(updatedProfile => {
 			return res.json(updatedProfile);
 		}).catch(next);
 	});
 
-
 	router.get('/user', mid.authorizeUser, (req, res, next) => {
 		UserController.getUser(res.locals.user.id).then(user => {
 			return res.json(user);
+		}).catch(next);
+	});
+  
+	router.get('/user/profile', mid.authorizeUser, (req, res, next) => {
+		UserController.getProfile(res.locals.user.id).then(profile => {
+			return res.json(profile.responseData);
 		}).catch(next);
 	});
 

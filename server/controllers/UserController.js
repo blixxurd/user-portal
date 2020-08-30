@@ -51,7 +51,7 @@ class UserController {
 				}
 
 				if(updates.pending.length == 0 && updates.complete.length == 0) {
-					return reject(new ApiError(500, 'No inputs recieved.'));
+					return reject(new ApiError(500, 'NO_INPUTS'));
 				}
 				try {
 					await u.save();
@@ -66,25 +66,32 @@ class UserController {
 	static updateProfile(id, profileData) {
 		return new Promise((resolve, reject) => {
 			if(!id || !profileData) {
-				return reject(new ApiError(500, 'Missing Fields. Please Provide and ID & Profile Data'));
+				return reject(new ApiError(500, 'UPDATE_PROFILE_MISSING_FIELDS'));
 			}
 			Profile.findOneAndUpdate({user_id: id}, profileData, {new: true}).then(resolve).catch(reject);
 		});
 	}
 
-	// static updatePasswordFromVerification() {
-	// 	return new Promise((resolve, reject) => {
-            
-	// 	});
-	// }
+	/**
+   * Initiates password recover for a user based on email address.
+   * @param {*} email 
+   */
+	static recoverPassword(email) {
+		return new Promise((resolve, reject) => {
+			if(!email) {
+				return reject(new ApiError(500, 'RECOVER_PASSWORD_MISSING_FIELDS'));
+			}
+			User.findOne({email: email}).then(VerificationController.sendPasswordReset).then(resolve).catch(reject);
+		});
+	}
 
 	/**
    * Gets a user's profile by ID
-   * @param {String} id 
+   * @param {String} id - User ID 
    */
-	static getProfile(id) {
+	static getProfile(user_id) {
 		return new Promise((resolve, reject) => {
-		
+			Profile.findOne({user_id}).then(resolve).catch(reject);
 		});
 	}
 

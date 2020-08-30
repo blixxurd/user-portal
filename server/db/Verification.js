@@ -9,7 +9,7 @@ module.exports = (mongoose) => {
 		},
 		verification_id: {
 			type: String,
-			default: uuidv4()
+			default: uuidv4(this._id)
 		},
 		verification_type: {
 			type: String,
@@ -19,6 +19,10 @@ module.exports = (mongoose) => {
 		expires: {
 			type: Date,
 			default: new Date(new Date().getTime() + 60 * 60 * 24 * 1000)
+		},
+		handled: {
+			type: Boolean,
+			default: false,
 		}
 	}, {timestamps: true});
   

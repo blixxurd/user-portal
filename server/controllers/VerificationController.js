@@ -38,6 +38,31 @@ class VerificationController {
 	}
   
 	/**
+   * Sends an email change verification to a user
+   * @param {Object} user User model for the user being notified
+   */
+	static sendPasswordReset(user) {
+		return new Promise((resolve, reject) => {
+			console.log(`Sending password reset email to ${user.email}`);
+			if(user.verified) {
+				const _verification = new Verification({ 
+					user_id: user._id, 
+					verification_type: 'password-recovery',
+					expires: new Date(new Date().getTime() + 60 * 60 * 1 * 1000)
+				});
+				_verification.save().then(verificationResult => {
+					Notify.sendPasswordReset(user, verificationResult.verification_id);
+					return resolve({success: true});
+				}).catch(e => {
+					return reject(new ApiError(500, 'GENERIC_FAIL', e));
+				});
+			} else {
+				return reject(new ApiError(500, 'ACCOUNT_VERIFICATION_REQUIRED'));
+			}
+		});
+	}
+  
+	/**
    * Handles the verification of a user account
    * @param {*} v The verification object
    */
@@ -48,15 +73,44 @@ class VerificationController {
 				if(!u.verified) {
 					try {
 						u.verified = true;
+						v.handled = true;
 						await u.save();
+						await v.save();
 						return resolve(u.responseData);
 					} catch(e) {
 						return reject(e);
 					}
 				} else {
-					return reject(new ApiError(500, 'User is already verified.'));
+					return reject(new ApiError(500, 'ALREADY_VERIFIED'));
 				}
 			}).catch(reject);
+		});
+	}
+  
+	/**
+   * Handles password change from verification.
+   * @param {*} verification_id 
+   * @param {*} newPassword 
+   */
+	static updatePasswordFromVerification(verification_id, newPassword) {
+		return new Promise((resolve, reject) => {
+			if(verification_id && newPassword) {
+				Verification.findOne({verification_id}).then(v => {
+					User.findOne({_id: v.user_id}).then(async user => {
+						user.password = newPassword;
+						v.handled = true;
+						try {
+							await user.save();
+							await v.save();
+							return resolve(user.responseData);
+						} catch(e) {
+							return reject(e);
+						}
+					});
+				}).catch(reject);
+			} else {
+				return reject(new ApiError(500, 'PASSWORD_CHANGE_MISSING_FIELDS'));
+			}
 		});
 	}
   
@@ -71,10 +125,11 @@ class VerificationController {
 				console.log(`Attempting email change for user: ${v.user_id}`);
 				console.log(v);
 				if(v.hasEmailMeta && u.email == v.meta.oldEmail) {
-					console.log(v);
+					v.handled = true;
 					try {
 						u.email = v.meta.newEmail;
 						await u.save();
+						await v.save();
 						return resolve(u.responseData);
 					} catch(e) {
 						return reject(e);
@@ -82,9 +137,15 @@ class VerificationController {
 				} else {
 					console.log('Email change failed.');
 					console.log(`HasEmailMeta: ${v.hasEmailMeta}`);
-					return reject(new ApiError(404, 'This link is no longer active.'));
+					return reject(new ApiError(404, 'VERIFICATION_INACTIVE'));
 				}
 			}).catch(reject);
+		});
+	}
+  
+	static passwordRecovery(v) {
+		return new Promise(resolve => {
+			return resolve({redirect: `/reset-password?a=${v.verification_id}`});
 		});
 	}
   
@@ -97,7 +158,7 @@ class VerificationController {
 			Verification.findOne({verification_id}).then(v => {
 				const types = {
 					'password-recovery': { 
-						handler: this.verifyAccount, 
+						handler: this.passwordRecovery, 
 						str: 'Password Reset'
 					},
 					'new-account': { 
@@ -113,16 +174,17 @@ class VerificationController {
 					}
 				};
 
-				if(!v) { return reject(new ApiError(404, 'Not Found')); }
+				if(!v) { return reject(new ApiError(404, 'NOT_FOUND'), null, {type: _type.str}); }
 				const _type = types[v.verification_type] ? types[v.verification_type] : types.default;
         
-				if(v.isExpired) {
-					// TODO - Why the fuck is this not erroring correctly.
-					return reject(new ApiError(410, `This ${_type.str} link is expired.`));
+				if(!_type.handler) {
+					return reject(new ApiError(501, 'BAD_VERIFICATION_METHOD'));
 				}
         
-				if(!_type.handler) {
-					return reject(new ApiError(501, 'Unsupported Verification Method.'));
+				console.log(v.isExpired);
+				console.log(v.handled);
+				if(v.isExpired || v.handled) {
+					return resolve({redirect: `/expired?a=${verification_id}`});
 				}
         
 				return resolve(_type.handler(v));

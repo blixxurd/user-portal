@@ -2,14 +2,15 @@
 Bootstrapped backend user management system.
 
 ## Required Environment Variables
-  AUTH_KEY // Used to sign the JWT Token
-  MONGO_URL // Your Mongo URL
-  WEBSITE_URL // The public URL where this API lives
-  MAILGUN_USER // SMTP Username for your mailgun account
-  MAILGUN_PASS // SMTP password for your mailgun account
-  NOTIFICATION_SENDER_NAME // The name to display on transactional emails
-  NOTIFICATION_SENDER_ADDRESS // The email address that transactional email should be sent from
-  NOTIFICATION_WEBSITE_NAME // The name of your website to show in transactional emails
+- `AUTH_KEY` Used to sign the JWT Token
+- `MONGO_URL` Your Mongo URL
+- `WEBSITE_URL` The public URL where this API lives
+- `MAILGUN_USER` SMTP Username for your mailgun account
+- `MAILGUN_PASS` SMTP password for your mailgun account
+- `NOTIFICATION_SENDER_NAME` The name to display on transactional emails
+- `NOTIFICATION_SENDER_ADDRESS` The email address that transactional email should be sent from
+- `NOTIFICATION_WEBSITE_NAME` The name of your website to show in transactional emails
+- `CLIENT_INDEX` Root URL for the client side app. 
 
 ## Database
 For the sake of convenience, right now this application uses MongoDB exclusively.
@@ -41,7 +42,7 @@ Controllers are primarily used to house large pieces of reusable logic. They fol
 ### Prefab Controllers
 
 #### API Controller
-Intended to be extended. This controller is built primarily to handle logic that occurs when a user requests an API route. In a perfect world, this will be the only controller loaded into your route files. 
+Intended to be extended. Currently unused. This controller is built primarily to handle logic that occurs when a user requests an API route. In a perfect world, this will be the only controller loaded into your route files. 
 
 #### UserController
 Handles the creation, updating, modification, and everything else around the User and Profile models.
@@ -60,15 +61,22 @@ Handles scenarios in which a user needs to verify an action through email. Works
 
 ## Helpers
 
-Helpers are primarily used for enforcing formats, or for housing modules that don't necesarily need to belong in their own class. 
+Helpers are primarily used for enforcing formats, or for housing modules that don't necesarily need to belong in their own class.
 
 ### Prefab Helpers
 
 #### ErrorHandler
 This helper enforces an error standard that is consistent across the app.
 
-# Remaining Work
-- Forgot Password Email
-- Password Reset
-- Logger (Nice to have)
+#### InputValidations
+Handles server side validation of input. 
+
+# Potential Todos
+- Rebuild Validations Controllers
+- Add more robuse logging
+- Standardize Error Output
+
+# Note for Client Build
+- Actions will need redirect mappings.
+
 

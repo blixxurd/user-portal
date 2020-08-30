@@ -20,6 +20,9 @@ class AuthController {
 					console.log(`Found user with '${username}`);
 					const valid = bcrypt.compareSync(password, u.password);
 					if(valid) {
+						if(!u.verified) {
+							return reject(new Error('ACCOUNT_VERIFICATION_REQUIRED'));
+						}
 						payload.valid = valid;
 						payload.token = jwt.sign({
 							id: u._id,
