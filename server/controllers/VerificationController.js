@@ -181,8 +181,6 @@ class VerificationController {
 					return reject(new ApiError(501, 'BAD_VERIFICATION_METHOD'));
 				}
         
-				console.log(v.isExpired);
-				console.log(v.handled);
 				if(v.isExpired || v.handled) {
 					return resolve({redirect: `/expired?a=${verification_id}`});
 				}
