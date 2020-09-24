@@ -1,6 +1,8 @@
 <template>
-  <Nav class="mb-6" />
-  <router-view />
+  <div id="app">
+    <Nav class="mb-6" />
+    <router-view />
+  </div>
 </template>
 
 <script>
