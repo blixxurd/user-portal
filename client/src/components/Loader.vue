@@ -1,5 +1,5 @@
 <template>
-  <div class="loader-wrap">
+  <div class="loader-wrap text-center">
     <div class="rounded-full loader" :class="classes"></div>
   </div>
 </template>

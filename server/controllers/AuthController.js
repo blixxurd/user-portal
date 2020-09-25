@@ -1,6 +1,7 @@
 const { User } = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { ApiError } = require('../helpers/ErrorHandlers');
 
 class AuthController {
 
@@ -18,11 +19,10 @@ class AuthController {
 					token: null
 				};
 				if(u) {
-					console.log(`Found user with '${username}`);
 					const valid = bcrypt.compareSync(password, u.password);
 					if(valid) {
 						if(!u.verified) {
-							return reject(new Error('ACCOUNT_VERIFICATION_REQUIRED'));
+							return reject(new ApiError(401, 'ACCOUNT_VERIFICATION_REQUIRED'));
 						}
 						payload.valid = valid;
 						payload.token = jwt.sign({
@@ -34,7 +34,7 @@ class AuthController {
 						});
 					}
 				}
-				return resolve(payload);
+				return payload.valid ? resolve(payload) : reject(new ApiError(401, 'INVALID_CREDENTIALS'));
 			}).catch(reject);
 		});
 	}
@@ -49,9 +49,9 @@ class AuthController {
 				if (err) {
 					if(err.name == 'TokenExpiredError') {
 						//expiredAt: 1408621000
-						return reject(new Error('Session expired.'));
+						return reject(new ApiError(401, 'EXPIRED_TOKEN'));
 					}
-					return reject(new Error('Bad Token.'));
+					return reject(new ApiError(401, 'BAD_TOKEN'));
 				}
 				return resolve(decoded);
 			});

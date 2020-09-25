@@ -1,7 +1,22 @@
 import axios from 'axios';
 const client = axios.create({
     // .. where we make our configurations
-    baseURL: 'http://localhost:3000/api/v1'
+    baseURL: process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api/v1' : '/api/v1'
+});
+
+client.interceptors.response.use(function(response) {
+  // For 200s
+  return response;
+},function(error) {
+  const _okErrors = [400, 401, 403, 422]; // Client errors
+  if(error.response && _okErrors.indexOf(error.response.status) > -1) {
+    const _clientErrors = error.response.data.errors;
+    if(_clientErrors && _clientErrors.length > 0) {
+      return Promise.reject(new Error(_clientErrors[0]));
+    }
+    return Promise.reject(error);
+  }
+  return Promise.reject(error);
 });
 
 const unauthenticated = {

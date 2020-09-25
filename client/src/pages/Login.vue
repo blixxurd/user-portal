@@ -89,11 +89,7 @@
         this.loading = true;
         API.login(this.form).then(body => {
           this.loading = false;
-          if(body.valid && body.token) {
-            this.$store.setState('token', body.token);
-          } else {
-            this.errors.push('Invalid Username or Password.');
-          }
+          this.$store.setState('token', body.token);
         }).catch((err) => {
           this.loading = false;
           this.errors.push(err.message);

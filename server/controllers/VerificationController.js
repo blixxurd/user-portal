@@ -2,7 +2,20 @@ const NotificationController = require('../controllers/NotificationController');
 const Notify = new NotificationController();
 const { Verification, User } = require('../db');
 const { ApiError } = require('../helpers/ErrorHandlers');
+const { validate } = require('uuid');
+
 class VerificationController {
+
+	static getVerification(verification_id) {
+		return new Promise((resolve, reject) => {
+			Verification.find({verification_id}).then(res => {
+				console.log(res);
+				return resolve(res.publicResponse);
+			}).catch(e => {
+				return reject(new ApiError(422, 'Invalid verification ID', e));
+			});
+		});
+	}
   
 	/**
    * Adds a verticication entry and notifies a user by email when a new account is made. 
@@ -54,10 +67,10 @@ class VerificationController {
 					Notify.sendPasswordReset(user, verificationResult.verification_id);
 					return resolve({success: true});
 				}).catch(e => {
-					return reject(new ApiError(500, 'GENERIC_FAIL', e));
+					return reject(new ApiError(500, 'MONGO_FAIL', e));
 				});
 			} else {
-				return reject(new ApiError(500, 'ACCOUNT_VERIFICATION_REQUIRED'));
+				return reject(new ApiError(422, 'ACCOUNT_VERIFICATION_REQUIRED'));
 			}
 		});
 	}
@@ -81,7 +94,7 @@ class VerificationController {
 						return reject(e);
 					}
 				} else {
-					return reject(new ApiError(500, 'ALREADY_VERIFIED'));
+					return reject(new ApiError(422, 'ALREADY_VERIFIED'));
 				}
 			}).catch(reject);
 		});
@@ -109,7 +122,7 @@ class VerificationController {
 					});
 				}).catch(reject);
 			} else {
-				return reject(new ApiError(500, 'PASSWORD_CHANGE_MISSING_FIELDS'));
+				return reject(new ApiError(422, 'PASSWORD_CHANGE_MISSING_FIELDS'));
 			}
 		});
 	}
@@ -137,7 +150,7 @@ class VerificationController {
 				} else {
 					console.log('Email change failed.');
 					console.log(`HasEmailMeta: ${v.hasEmailMeta}`);
-					return reject(new ApiError(404, 'VERIFICATION_INACTIVE'));
+					return reject(new ApiError(404, 'NOT_FOUND'));
 				}
 			}).catch(reject);
 		});
@@ -145,7 +158,7 @@ class VerificationController {
   
 	static passwordRecovery(v) {
 		return new Promise(resolve => {
-			return resolve({redirect: `/reset-password?a=${v.verification_id}`});
+			return resolve({redirect: `/a/reset-password?a=${v.verification_id}`});
 		});
 	}
   

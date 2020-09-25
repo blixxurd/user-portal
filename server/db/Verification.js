@@ -26,6 +26,16 @@ module.exports = (mongoose) => {
 		}
 	}, {timestamps: true});
   
+	Verification.virtual('publicResponse').get(function() {
+		let now = new Date();
+		let expiry = new Date(this.expires);
+		return {
+			expired: now > expiry,
+			handled: this.handled,
+			type: this.verification_type
+		};
+	});
+  
 	Verification.virtual('isExpired').get(function() {
 		let now = new Date();
 		let expiry = new Date(this.expires);

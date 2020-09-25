@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { ApiError } = require('../helpers/ErrorHandlers');
 const { AuthController, UserController, VerificationController } = require('../controllers');
 
 
@@ -13,15 +14,16 @@ module.exports = ({ mid }) => {
 			email: req.body.email
 		};
 		if(req.errors.length > 0) {
-			return res.json({errors: req.errors, errorType: 'soft', status: 200});
+			return next(new ApiError(422, req.errors));
 		} else {
 			UserController.create(user).then(authMember => {
 				return res.json(authMember);
 			}).catch(e => {
 				if(!!e.code && e.code == 11000) {
+          
 					// Duplicate
 					const dupeKey = Object.keys(e.keyPattern)[0];
-					return res.json({errors: [`That ${dupeKey} is already taken. Please choose another.`], errorType: 'soft', status: 200, context: e.name+e.code});
+					return next(new ApiError(422, `That ${dupeKey} is already taken. Please choose another.`, e, {key: dupeKey}));
 				} else {
 					return next(e);
 				}
@@ -30,7 +32,6 @@ module.exports = ({ mid }) => {
 	});
 
 	router.post('/login', (req, res, next) => {
-		console.log(req.body);
 		AuthController.authenticate(req.body.username, req.body.password).then(authDetail => {
 			return res.json(authDetail);
 		}).catch(next);
@@ -40,7 +41,8 @@ module.exports = ({ mid }) => {
 		UserController.recoverPassword(req.body.email).then(recovery => {
 			return res.json(recovery);
 		}).catch(err => {
-			//We response normally here to avoid showing users what accounts do and don't exist.
+			//We respond normally here to avoid showing users what accounts do and don't exist.
+			// TODO - 401
 			console.error(err);
 			return res.json({success: true}); 
 		});
@@ -77,6 +79,12 @@ module.exports = ({ mid }) => {
 	router.get('/user/profile', mid.authorizeUser, (req, res, next) => {
 		UserController.getProfile(res.locals.user.id).then(profile => {
 			return res.json(profile.responseData);
+		}).catch(next);
+	});
+  
+	router.get('/verification/:uuid', (req, res, next) => {
+		VerificationController.getVerification(req.params.uuid).then(verification => {
+			return res.json(verification);
 		}).catch(next);
 	});
 

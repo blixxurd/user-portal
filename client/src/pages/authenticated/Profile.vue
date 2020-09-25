@@ -17,7 +17,7 @@
     methods: {
       logout() {
         this.$store.setState('token', null);
-      } 
+      }
     }
   }
 </script>

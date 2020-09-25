@@ -51,7 +51,7 @@ class UserController {
 				}
 
 				if(updates.pending.length == 0 && updates.complete.length == 0) {
-					return reject(new ApiError(500, 'NO_INPUTS'));
+					return reject(new ApiError(422, 'NO_INPUTS'));
 				}
 				try {
 					await u.save();
@@ -66,7 +66,7 @@ class UserController {
 	static updateProfile(id, profileData) {
 		return new Promise((resolve, reject) => {
 			if(!id || !profileData) {
-				return reject(new ApiError(500, 'UPDATE_PROFILE_MISSING_FIELDS'));
+				return reject(new ApiError(422, 'UPDATE_PROFILE_MISSING_FIELDS'));
 			}
 			Profile.findOneAndUpdate({user_id: id}, profileData, {new: true}).then(resolve).catch(reject);
 		});
@@ -79,7 +79,7 @@ class UserController {
 	static recoverPassword(email) {
 		return new Promise((resolve, reject) => {
 			if(!email) {
-				return reject(new ApiError(500, 'RECOVER_PASSWORD_MISSING_FIELDS'));
+				return reject(new ApiError(422, 'RECOVER_PASSWORD_MISSING_FIELDS'));
 			}
 			User.findOne({email: email}).then(VerificationController.sendPasswordReset).then(resolve).catch(reject);
 		});
