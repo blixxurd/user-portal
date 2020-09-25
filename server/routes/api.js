@@ -30,6 +30,7 @@ module.exports = ({ mid }) => {
 	});
 
 	router.post('/login', (req, res, next) => {
+		console.log(req.body);
 		AuthController.authenticate(req.body.username, req.body.password).then(authDetail => {
 			return res.json(authDetail);
 		}).catch(next);
@@ -38,7 +39,11 @@ module.exports = ({ mid }) => {
 	router.post('/recovery/forgot-password', (req, res, next) => {
 		UserController.recoverPassword(req.body.email).then(recovery => {
 			return res.json(recovery);
-		}).catch(next);
+		}).catch(err => {
+			//We response normally here to avoid showing users what accounts do and don't exist.
+			console.error(err);
+			return res.json({success: true}); 
+		});
 	});
 
 	router.post('/recovery/reset-password', mid.validatePasswordChange, (req, res, next) => {

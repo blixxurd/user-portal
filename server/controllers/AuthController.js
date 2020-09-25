@@ -10,6 +10,7 @@ class AuthController {
    * @param {*} password 
    */
 	static authenticate(username, password) {
+		console.log({username, password});
 		return new Promise((resolve, reject) => {
 			User.findOne({username}).then(u => {
 				let payload = {

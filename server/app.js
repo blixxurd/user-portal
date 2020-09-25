@@ -7,7 +7,7 @@ const logger = require('morgan');
 const routes = require('./routes');
 const { AppMiddleware } = require('./middleware');
 const { db } = require('./db');
-
+const cors = require('cors');
 
 class App extends EventEmitter {
 
@@ -17,12 +17,11 @@ class App extends EventEmitter {
 		this.routeVars = {
 			mid: AppMiddleware
 		};
-		this.init();
 		db.connect(process.env.MONGO_URL, {
 			useNewUrlParser: true, 
 			useUnifiedTopology: true
 		}).then(async () => {
-			console.log('Mongoose Connected');
+			console.log('[App] Mongoose Connected');
 			this.ready();
 		}).catch(err => {
 			console.error(err);
@@ -31,6 +30,15 @@ class App extends EventEmitter {
 	}
 
 	init() {
+		// Cross Site Requests
+		if(process.env.NODE_ENV == 'development') {
+			console.log('[App] Initiated Dev Server CORS Settings.');
+			this.app.use(cors({
+				origin: 'http://localhost:8080',
+				optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+			}));
+		}
+
 		// Middlewares
 		this.app.use(logger('dev'));
 		this.app.use(express.json());
@@ -50,7 +58,7 @@ class App extends EventEmitter {
 
 	ready() {
 		//Bug with event emitter -- 1s timeout defers to next tick. 
-		setTimeout(() =>{ 
+		setTimeout(() => {
 			this.emit('ready');
 		}, 1);
 	}

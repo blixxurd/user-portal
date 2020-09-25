@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import Login from '@/pages/Login.vue';
 import Register from '@/pages/Register.vue';
 import Recover from '@/pages/Recover.vue';
+import Home from '@/pages/Home.vue';
 
 const history = createWebHistory();
 const router = createRouter({
@@ -9,7 +9,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: Login
+      component: Home
     },
     {
       path: '/recover',
