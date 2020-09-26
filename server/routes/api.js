@@ -20,7 +20,6 @@ module.exports = ({ mid }) => {
 				return res.json(authMember);
 			}).catch(e => {
 				if(!!e.code && e.code == 11000) {
-          
 					// Duplicate
 					const dupeKey = Object.keys(e.keyPattern)[0];
 					return next(new ApiError(422, `That ${dupeKey} is already taken. Please choose another.`, e, {key: dupeKey}));
@@ -84,6 +83,7 @@ module.exports = ({ mid }) => {
   
 	router.get('/verification/:uuid', (req, res, next) => {
 		VerificationController.getVerification(req.params.uuid).then(verification => {
+			console.log(verification);
 			return res.json(verification);
 		}).catch(next);
 	});

@@ -8,9 +8,13 @@ class VerificationController {
 
 	static getVerification(verification_id) {
 		return new Promise((resolve, reject) => {
-			Verification.find({verification_id}).then(res => {
-				console.log(res);
-				return resolve(res.publicResponse);
+			const _valid = validate(verification_id);
+			if(!_valid) {
+				return reject(new ApiError(422, 'Invalid verification ID'));
+			}
+			Verification.findOne({verification_id}).then(v => {
+				console.log(v);
+				return resolve(v.publicResponse);
 			}).catch(e => {
 				return reject(new ApiError(422, 'Invalid verification ID', e));
 			});
@@ -195,7 +199,7 @@ class VerificationController {
 				}
         
 				if(v.isExpired || v.handled) {
-					return resolve({redirect: `/expired?a=${verification_id}`});
+					return resolve({redirect: `/error?a=${verification_id}`});
 				}
         
 				return resolve(_type.handler(v));

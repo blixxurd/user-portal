@@ -5,7 +5,6 @@ const client = axios.create({
 });
 
 client.interceptors.response.use(function(response) {
-  // For 200s
   return response;
 },function(error) {
   const _okErrors = [400, 401, 403, 422]; // Client errors
@@ -27,6 +26,13 @@ const unauthenticated = {
           return resolve(res.data);
       }).catch(reject);
     });
+  },
+  get: function(path) {
+    return new Promise((resolve, reject) => {
+      client.get(path).then(res => {
+        return resolve(res.data);
+      }).catch(reject);
+    });
   }
 }
 
@@ -42,9 +48,19 @@ const recover = (body) => {
   return unauthenticated.post('/recovery/forgot-password', body);
 }
 
+const verification = (vid) => {
+  return unauthenticated.get(`/verification/${vid}`);
+}
+
+const changePassFromRecovery = (body) => {
+  return unauthenticated.post('/recovery/reset-password', body);
+}
+
 export default { 
   client, 
   register, 
   login,
-  recover
+  recover, 
+  verification,
+  changePassFromRecovery
 };

@@ -9,7 +9,7 @@ module.exports = (mongoose) => {
 		},
 		verification_id: {
 			type: String,
-			default: uuidv4(this._id)
+			default: uuidv4 //https://stackoverflow.com/questions/51025857/node-js-can-not-set-default-uuid-with-mongoose
 		},
 		verification_type: {
 			type: String,
@@ -18,7 +18,9 @@ module.exports = (mongoose) => {
 		meta: Schema.Types.Mixed,
 		expires: {
 			type: Date,
-			default: new Date(new Date().getTime() + 60 * 60 * 24 * 1000)
+			default: function() {
+				return new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
+			}
 		},
 		handled: {
 			type: Boolean,
