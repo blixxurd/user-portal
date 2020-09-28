@@ -36,7 +36,7 @@ module.exports = ({ mid }) => {
 		}).catch(next);
 	});
 
-	router.post('/recovery/forgot-password', (req, res, next) => {
+	router.post('/recovery/forgot-password', (req, res) => {
 		UserController.recoverPassword(req.body.email).then(recovery => {
 			return res.json(recovery);
 		}).catch(err => {

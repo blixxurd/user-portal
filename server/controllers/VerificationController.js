@@ -199,7 +199,7 @@ class VerificationController {
 				}
         
 				if(v.isExpired || v.handled) {
-					return resolve({redirect: `/error?a=${verification_id}`});
+					return resolve({redirect: `/a/error?a=${verification_id}`});
 				}
         
 				return resolve(_type.handler(v));
