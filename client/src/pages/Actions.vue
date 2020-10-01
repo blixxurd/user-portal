@@ -54,7 +54,6 @@
 
 <script>
   import Error from '../pages/Error.vue';
-  import API from '../controllers/api.controller';
   import Alerts from '../components/Alerts.vue';
   import Loader from '../components/Loader.vue';
   import PasswordChange from '../pages/actions/PasswordChange.vue'
@@ -98,7 +97,7 @@
 
       // For errors, we need to check why the error was thrown.
       if(this.actionId) {
-        API.verification(this.actionId).then(v => {
+        this.$api.verification(this.actionId).then(v => {
           this.loading = false;
           this.verificationData = v;
         }).catch(e => {

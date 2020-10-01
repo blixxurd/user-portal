@@ -43,7 +43,6 @@
 
 
 <script>
-  import API from '../controllers/api.controller';
   import Alerts from '../components/Alerts.vue';
   import Loader from '../components/Loader.vue';
 
@@ -70,7 +69,7 @@
         this.reset();
         this.loading = true;
         const payload = { email: this.email };
-        API.recover(payload).then(res => {
+        this.$api.recover(payload).then(res => {
           console.log(res);
           this.feedback.push(`An email containing instructions to reset your password has been emailed to you.`);
           this.email = '';

@@ -44,7 +44,6 @@
 
 
 <script>
-  import API from '../../controllers/api.controller';
   import Alerts from '../../components/Alerts.vue';
   import Loader from '../../components/Loader.vue';
 
@@ -90,7 +89,7 @@
           password: this.form.password
         };
 
-        API.changePassFromRecovery(_payload).then(() => {
+        this.$api.changePassFromRecovery(_payload).then(() => {
           this.loading = false;
           this.completed = true;
           this.feedback.push(`Your password has been updated!`);

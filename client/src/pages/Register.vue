@@ -53,7 +53,6 @@
 
 
 <script>
-  import API from '../controllers/api.controller';
   import Alerts from '../components/Alerts.vue';
   import Loader from '../components/Loader.vue';
 
@@ -89,7 +88,7 @@
         }
         if(this.errors.length == 0) {
           this.loading = true;
-          API.register(this.registration).then(res => {
+          this.$api.register(this.registration).then(res => {
             this.loading = false;
             if(!!res.errors && res.errors.length > 0) {
               this.errors.push(res.errors[0]);

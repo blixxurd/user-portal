@@ -1,8 +1,19 @@
 import axios from 'axios';
+
 const client = axios.create({
     // .. where we make our configurations
     baseURL: process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api/v1' : '/api/v1'
 });
+
+const setAuth = (token) => {
+  client.defaults.headers = {
+    'Authorization': token
+  }
+}
+
+const deAuth = () => {
+  client.defaults.headers = {};
+}
 
 client.interceptors.response.use(function(response) {
   return response;
@@ -18,7 +29,7 @@ client.interceptors.response.use(function(response) {
   return Promise.reject(error);
 });
 
-const unauthenticated = {
+const methods = {
   post: function(path, body) {
     return new Promise((resolve, reject) => {
       const payload = body;
@@ -37,30 +48,38 @@ const unauthenticated = {
 }
 
 const login = (body) => {
-  return unauthenticated.post('/login', body);
+  return methods.post('/login', body);
 }
 
 const register = (body) => {
-  return unauthenticated.post('/register', body);
+  return methods.post('/register', body);
 }
 
 const recover = (body) => {
-  return unauthenticated.post('/recovery/forgot-password', body);
+  return methods.post('/recovery/forgot-password', body);
 }
 
 const verification = (vid) => {
-  return unauthenticated.get(`/verification/${vid}`);
+  return methods.get(`/verification/${vid}`);
 }
 
 const changePassFromRecovery = (body) => {
-  return unauthenticated.post('/recovery/reset-password', body);
+  return methods.post('/recovery/reset-password', body);
+}
+
+// Authenticated
+const getProfile = () => {
+  return methods.get('/user/profile');
 }
 
 export default { 
-  client, 
+  client,
+  setAuth,
   register, 
   login,
   recover, 
   verification,
-  changePassFromRecovery
+  changePassFromRecovery,
+  getProfile,
+  deAuth
 };

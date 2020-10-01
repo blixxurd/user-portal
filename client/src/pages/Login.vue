@@ -19,14 +19,7 @@
 
         <Alerts v-if="errors.length > 0" class="mt-4 mb-3" type="danger" :message="errors[0]" :icon="true" />
 
-        <div class="mt-6 flex items-center justify-between">
-          <div class="flex items-center">
-            <input id="remember_me" type="checkbox" class="form-checkbox h-4 w-4 text-orange-500 transition duration-150 ease-in-out">
-            <label for="remember_me" class="ml-2 block text-sm leading-5 text-gray-800">
-              Remember me
-            </label>
-          </div>
-
+        <div class="mt-6 flex items-center justify-between text-right">
           <div class="text-sm leading-5">
             <router-link to="/recover" class="font-medium text-orange-500 hover:text-orange-400 focus:outline-none focus:underline transition ease-in-out duration-150">
               Forgot your password?
@@ -60,7 +53,6 @@
 
 
 <script>
-  import API from '../controllers/api.controller';
   import Alerts from '../components/Alerts.vue';
   import Loader from '../components/Loader.vue';
 
@@ -87,9 +79,9 @@
       submit() {
         this.errors = [];
         this.loading = true;
-        API.login(this.form).then(body => {
+        this.$api.login(this.form).then(body => {
           this.loading = false;
-          this.$store.setState('token', body.token);
+          this.$store.login(body.token);
         }).catch((err) => {
           this.loading = false;
           this.errors.push(err.message);

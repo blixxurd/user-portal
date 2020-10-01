@@ -1,18 +1,18 @@
 <template>
-  <Profile v-if="isLoggedIn" />
+  <ProfileHome v-if="isLoggedIn" />
   <Login v-else />
 </template>
 
 
 <script>
   import Login from './Login';
-  import Profile from './authenticated/Profile.vue';
+  import ProfileHome from './authenticated/Home.vue';
 
   export default {
     name: 'Home',
     components: {
       Login,
-      Profile
+      ProfileHome
     },
     data() {
       return {

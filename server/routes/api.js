@@ -68,16 +68,11 @@ module.exports = ({ mid }) => {
 			return res.json(updatedProfile);
 		}).catch(next);
 	});
-
-	router.get('/user', mid.authorizeUser, (req, res, next) => {
-		UserController.getUser(res.locals.user.id).then(user => {
-			return res.json(user);
-		}).catch(next);
-	});
   
 	router.get('/user/profile', mid.authorizeUser, (req, res, next) => {
 		UserController.getProfile(res.locals.user.id).then(profile => {
-			return res.json(profile.responseData);
+			const _response = {user: res.locals.user, profile: profile.responseData};
+			return res.json(_response);
 		}).catch(next);
 	});
   
