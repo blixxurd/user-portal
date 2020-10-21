@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto text-center">
+  <div class="text-center">
     <h1 class="font-bold text-6xl">{{errorCode}}</h1>
     <p class="py-10">
       {{errorMessage}}

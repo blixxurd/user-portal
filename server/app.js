@@ -34,7 +34,7 @@ class App extends EventEmitter {
 		if(process.env.NODE_ENV == 'development') {
 			console.log('[App] Initiated Dev Server CORS Settings.');
 			this.app.use(cors({
-				origin: 'http://localhost:8080',
+				origin: '*',
 				optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 			}));
 		}

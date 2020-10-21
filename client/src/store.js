@@ -10,7 +10,8 @@ const store = {
     token: token ? token : null,
     isLoading: false,
     user: null,
-    profile: null
+    profile: null,
+    authErrors: []
   }),
 
   isLoggedIn() {
@@ -44,6 +45,29 @@ const store = {
 if(token) {
   API.setAuth(token);
 }
+
+// Set up Interceptors
+API.client.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  const _okErrors = [400, 401, 403, 422]; // Client errors
+  if(error.response && _okErrors.indexOf(error.response.status) > -1) {
+    const _clientErrors = error.response.data.errors;
+    // Special Handler for Auth Errors, since these will occur 
+    // on occasion for things like token expirations
+    if(store.isLoggedIn() && error.response.status == 401 || error.response.status == 403) {
+      if(_clientErrors && _clientErrors.length > 0) {
+        store.state.authErrors.push(_clientErrors[0]);
+      }
+      store.logout();
+    }
+    if(_clientErrors && _clientErrors.length > 0) {
+      return Promise.reject(new Error(_clientErrors[0]));
+    }
+    return Promise.reject(error);
+  }
+  return Promise.reject(error);
+});
 
 export default {
   install: (app) => {

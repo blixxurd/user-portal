@@ -72,9 +72,15 @@
         loading: false
       }
     },
+    mounted() {
+      if(this.$store.state.authErrors.length > 0) {
+        this.errors = this.$store.state.authErrors;
+      }
+    },
     methods: {
       clearOutput() {
         this.errors = [];
+        this.$store.state.authErrors = [];
       },
       submit() {
         this.errors = [];

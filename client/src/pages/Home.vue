@@ -21,7 +21,7 @@
     },
     computed: {
       isLoggedIn() {
-        return !!this.$store.state.token;
+        return this.$store.isLoggedIn();
       }
     }
   }

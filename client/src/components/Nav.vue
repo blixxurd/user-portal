@@ -10,7 +10,7 @@
       <div class="block flex ml-4 justify-self-end flex-grow text-right">
         <div class="text-sm lg:flex-grow" v-if="loggedIn">
           <router-link to="/" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
-            Home
+            Dashboard
           </router-link>
           <a @click="logout" href="javascript:;" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
             Logout

@@ -6,4 +6,4 @@ import store from './store';
 // Tailwind
 import './assets/styles/index.css';
 
-createApp(App).use(router).use(store).mount('#app');
+createApp(App).use(store).use(router).mount('#app');
