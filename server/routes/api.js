@@ -18,15 +18,7 @@ module.exports = ({ mid }) => {
 		} else {
 			UserController.create(user).then(authMember => {
 				return res.json(authMember);
-			}).catch(e => {
-				if(!!e.code && e.code == 11000) {
-					// Duplicate
-					const dupeKey = Object.keys(e.keyPattern)[0];
-					return next(new ApiError(422, `That ${dupeKey} is already taken. Please choose another.`, e, {key: dupeKey}));
-				} else {
-					return next(e);
-				}
-			});
+			}).catch(next);
 		}
 	});
 
@@ -57,10 +49,14 @@ module.exports = ({ mid }) => {
 		}
 	});
   
-	router.post('/user/update-user', mid.authorizeUser, (req, res, next) => {
-		UserController.updateUser(res.locals.user.id, req.body).then(updateResponse => {
-			return res.json(updateResponse);
-		}).catch(next);
+	router.post('/user/update-user', [mid.authorizeUser, mid.validateUserFields], (req, res, next) => {
+		if(req.errors.length > 0) {
+			return next(new ApiError(422, req.errors));
+		} else {
+			UserController.updateUser(res.locals.user.id, req.body).then(updateResponse => {
+				return res.json(updateResponse);
+			}).catch(next);
+		}
 	});
 
 	router.post('/user/update-profile', mid.authorizeUser, (req, res, next) => {

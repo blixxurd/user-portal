@@ -41,11 +41,19 @@ class UserController {
 					complete: []
 				};
 				if(!!email && (email !== u.email)) {
+					try {
+						let exists = User.exists({email});
+						if(exists) {
+							return reject(new ApiError(422, 'EMAIL_TAKEN'));
+						}
+					} catch(e) {
+						return reject(new ApiError(500, 'DATABASE_ERROR', e, {email}));
+					}
 					// Email address Change
 					VerificationController.sendEmailVerification(u, email);
 					updates.pending.push('email');
 				}
-				if(password) {
+				if(!!password) {
 					u.password = password;
 					updates.complete.push('password');
 				}

@@ -58,6 +58,16 @@ const getProfile = () => {
   return methods.get('/user/profile');
 }
 
+// Authenticated
+const updateUser = (body) => {
+  return methods.post('/user/update-user', body);
+}
+
+// Authenticated
+const updateProfile = (body) => {
+  return methods.post('/user/update-profile', body);
+}
+
 export default { 
   client,
   setAuth,
@@ -67,5 +77,7 @@ export default {
   verification,
   changePassFromRecovery,
   getProfile,
-  deAuth
+  deAuth,
+  updateUser,
+  updateProfile
 };
