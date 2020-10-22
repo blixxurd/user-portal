@@ -38,7 +38,7 @@
                 </svg>
                 <Loader size="4" color="white" v-if="loading" />
               </span>
-              Update Profile
+              Update Account Info
             </button>
           </div>
 
@@ -109,6 +109,7 @@
         this.$api.getProfile().then(res => {
           this.account = JSON.parse(JSON.stringify(res.user));
           this.$store.setState('user', res.user);
+          this.$store.setState('profile', res.profile);
         }).catch(e => {
           // TODO - Global Error Alert
           console.error(e);
