@@ -10,7 +10,10 @@ module.exports = () => {
 				return res.redirect(`${process.env.CLIENT_INDEX}${v.redirect}`);
 			}
 			return res.redirect(`${process.env.CLIENT_INDEX}/a/success`);
-		}).catch(next);
+		}).catch(err => {
+			console.error(err);
+			return res.redirect(`${process.env.CLIENT_INDEX}/a/error?a=${req.params.id}&status=500`);
+		});
 	});
   
 	return router;

@@ -113,6 +113,14 @@ class VerificationController {
 		return new Promise((resolve, reject) => {
 			if(verification_id && newPassword) {
 				Verification.findOne({verification_id}).then(v => {
+					console.log(v);
+					console.log('fuck');
+					if(v.handled) {
+						return reject(new ApiError(422, 'PASSWORD_CHANGE_HANDLED'));
+					}
+					if(v.isExpired) {
+						return reject(new ApiError(422, 'PASSWORD_CHANGE_EXPIRED'));
+					}
 					User.findOne({_id: v.user_id}).then(async user => {
 						user.password = newPassword;
 						v.handled = true;

@@ -41,7 +41,7 @@ module.exports = ({ mid }) => {
 
 	router.post('/recovery/reset-password', mid.validatePasswordChange, (req, res, next) => {
 		if(req.errors.length > 0) {
-			return res.json({errors: req.errors, errorType: 'soft', status: 200});
+			return next(new ApiError(422, req.errors));
 		} else {
 			VerificationController.updatePasswordFromVerification(req.body.token, req.body.password).then(r => {
 				return res.json(r);
@@ -74,7 +74,6 @@ module.exports = ({ mid }) => {
   
 	router.get('/verification/:uuid', (req, res, next) => {
 		VerificationController.getVerification(req.params.uuid).then(verification => {
-			console.log(verification);
 			return res.json(verification);
 		}).catch(next);
 	});
