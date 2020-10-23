@@ -59,32 +59,6 @@
   }
 </script>
 
-<style scoped>
-  .nav-link {
-    @apply inline-flex items-center px-1 pt-1 border-b-2 outline-none;
-  }
-  .nav-link-inactive {
-    @apply border-transparent text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out;
-  }
-  .nav-link-inactive:hover, .nav-link-inactive:focus {
-    @apply text-gray-700 border-gray-300;
-  }
-  .nav-link-active {
-    @apply border-orange-500 text-sm font-medium leading-5 text-gray-900 transition duration-150 ease-in-out;
-  }
-  .nav-link-active:hover {
-    @apply border-orange-700;
-  }
-  .nav-link-mobile-active {
-    @apply block pl-3 pr-4 py-2 border-l-4 border-orange-500 text-base font-medium text-orange-700 transition duration-150 ease-in-out;
-  }
-  .nav-link-mobile-active:hover, .nav-link-mobile-active:focus {
-    @apply outline-none text-orange-800 border-orange-700;
-  }
-  .nav-link-mobile-inactive:hover, .nav-link-mobile-inactive:focus {
-    @apply text-gray-800 border-gray-300 outline-none text-gray-800 border-gray-300;
-  }
-  .nav-link-mobile-inactive {
-    @apply block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 transition duration-150 ease-in-out;
-  }
+<style>
+
 </style>

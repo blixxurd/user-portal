@@ -7,46 +7,54 @@ import ErrorPage from '@/pages/Error.vue';
 import EditAccount from '@/pages/authenticated/EditAccount.vue';
 import EditProfile from '@/pages/authenticated/EditProfile.vue';
 
-// TODO move these to their own guards file. 
-// function removeQueryParams(to) {
-//   if (Object.keys(to.query).length)
-//     return { path: to.path, query: {}, hash: to.hash }
-// }
+function InstancedRouter(app) {
 
-// function removeHash(to) {
-//   if (to.hash) return { path: to.path, query: to.query, hash: '' }
-// }
+  const history = createWebHistory();
+  const router = createRouter({
+    history,
+    routes: [
+      {
+        path: '/',
+        component: Home
+      },
+      {
+        path: '/recover',
+        component: Recover
+      },
+      {
+        path: '/register',
+        component: Register
+      },
+      {
+        path: '/a/:action',
+        component: Actions
+      },
+      {
+        path: '/account',
+        component: EditAccount,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/account/profile',
+        component: EditProfile,
+        meta: { requiresAuth: true }
+      },
+      { path: '/:pathMatch(.*)*', name: 'NotFound', component: ErrorPage },
+    ]
+  });
+  
+  
+  
+  router.beforeEach((to) => {
+    if(!!to.meta.requiresAuth && !app.config.globalProperties.$store.isLoggedIn()) {
+      router.push('/');
+      return false;
+    }
+    return true;
+  });
 
-const history = createWebHistory();
-const router = createRouter({
-  history,
-  routes: [
-    {
-      path: '/',
-      component: Home
-    },
-    {
-      path: '/recover',
-      component: Recover
-    },
-    {
-      path: '/register',
-      component: Register
-    },
-    {
-      path: '/a/:action',
-      component: Actions
-    },
-    {
-      path: '/account',
-      component: EditAccount
-    },
-    {
-      path: '/account/profile',
-      component: EditProfile
-    },
-    { path: '/:pathMatch(.*)*', name: 'NotFound', component: ErrorPage },
-  ]
-});
+  return router.install(app);
 
-export default router;
+}
+
+export default InstancedRouter;

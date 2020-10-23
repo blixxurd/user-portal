@@ -14,12 +14,19 @@
     name: 'App',
     components: {
       Nav
+    },
+    computed: {
+      loggedIn() {
+        return this.$store.isLoggedIn();
+      }
+    },
+    watch: {
+      loggedIn(newState, oldState) {
+        if(oldState && !newState) {
+          // They logged out.
+          this.$router.push({ path: '/' });
+        }
+      }
     }
   }
 </script>
-
-<style>
-  .main-wrap {
-    position:relative;
-  }
-</style>

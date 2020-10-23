@@ -9,21 +9,21 @@
         <form class="max-w-md" @submit.prevent="submit">
 
           <div class="input-item mb-5">
-            <label for="username" class="pl-1 font-bold text-xs text-gray-700">Username</label>
-            <input v-model="account.username" disabled aria-label="Username" name="username" type="text" autofill="no" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5" placeholder="desired username">
+            <label for="username" class="profile-form-label">Username</label>
+            <input v-model="account.username" disabled aria-label="Username" name="username" type="text" autofill="no" required class="profile-form-input" placeholder="desired username">
           </div>
 
           <div class="input-item mb-5">
-            <label for="email" class="pl-1 font-bold text-xs text-gray-700">Email Address</label>
-            <input v-model="account.email" aria-label="Email Address" name="email" type="email" autofill="no" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5" placeholder="you@email.com">
+            <label for="email" class="profile-form-label">Email Address</label>
+            <input v-model="account.email" aria-label="Email Address" name="email" type="email" autofill="no" class="profile-form-input" placeholder="you@email.com">
           </div>
 
           <div class="input-item mb-2">
-            <label for="password" class="pl-1 font-bold text-xs text-gray-700">Password</label>
-            <input v-model="account.password" aria-label="Password" name="password" type="password" autofill="no" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5" placeholder="enter password">
+            <label for="password" class="profile-form-label">Password</label>
+            <input v-model="account.password" aria-label="Password" name="password" type="password" autofill="no" class="profile-form-input" placeholder="enter password">
           </div>
           <div class="input-item mb-2">
-            <input  v-model="account.passwordVerify" aria-label="Password" name="passwordRepeat" type="password" autofill="no" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5" placeholder="verify password">
+            <input  v-model="account.passwordVerify" aria-label="Password" name="passwordRepeat" type="password" autofill="no" class="profile-form-input" placeholder="verify password">
           </div>
 
           <Alerts v-if="errors.length > 0" class="my-3" type="danger" :message="errors[0]" :icon="true" />

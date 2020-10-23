@@ -9,18 +9,18 @@
         <form class="max-w-md" @submit.prevent="submit">
 
           <div class="input-item mb-5">
-            <label for="firstName" class="pl-1 font-bold text-xs text-gray-700">First Name</label>
-            <input v-model="profile.first_name" aria-label="First Name" name="firstName" type="text" autofill="no" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5">
+            <label for="firstName" class="profile-form-label">First Name</label>
+            <input v-model="profile.first_name" aria-label="First Name" name="firstName" type="text" autofill="no" required class="profile-form-input">
           </div>
 
           <div class="input-item mb-5">
-            <label for="lastName" class="pl-1 font-bold text-xs text-gray-700">Last Name</label>
-            <input v-model="profile.last_name" aria-label="Last Name" name="lastName" type="text" autofill="no" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5">
+            <label for="lastName" class="profile-form-label">Last Name</label>
+            <input v-model="profile.last_name" aria-label="Last Name" name="lastName" type="text" autofill="no" class="profile-form-input">
           </div>
 
           <div class="input-item mb-5">
-            <label for="phoneNumber" class="pl-1 font-bold text-xs text-gray-700">Phone Number</label>
-            <input v-model="profile.phone" aria-label="Phone Number" name="phoneNumber" type="phone" autofill="no" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:shadow-outline-teal focus:border-gray-400 focus:z-10 sm:text-sm sm:leading-5">
+            <label for="phoneNumber" class="profile-form-label">Phone Number</label>
+            <input v-model="profile.phone" aria-label="Phone Number" name="phoneNumber" type="phone" autofill="no" class="profile-form-input">
           </div>
 
           <Alerts v-if="errors.length > 0" class="my-3" type="danger" :message="errors[0]" :icon="true" />
@@ -77,8 +77,8 @@
       submit() {
         this.reset();
         this.loading = true;
-        this.$api.updateProfile(this.profile).then(acc => {
-          console.log(acc);
+        this.$api.updateProfile(this.profile).then(() => {
+          this.$store.setState('profile', this.profile);
           this.loading = false;
           this.feedback.push("Your profile has been updated.");
         }).catch(e => {
