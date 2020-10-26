@@ -73,10 +73,6 @@ Handles server side validation of input.
 
 # Potential Todos
 - Rebuild Validations Controllers
-- Add more robuse logging
-- Standardize Error Output
-
-# Note for Client Build
-- Actions will need redirect mappings.
+- Add more robust logging
 
 

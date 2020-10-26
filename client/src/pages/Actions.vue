@@ -12,7 +12,7 @@
           <Alerts class="mt-4 mb-3" type="success" message="Your verification has been completed successfully. ✌️" :icon="true" title="Thank you!" />
           
           <div class="back-to-account my-10">
-            <router-link to="/" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition duration-150 ease-in-out">
+            <router-link to="/" class="group button-primary">
               Back to Login
             </router-link>
           </div>
@@ -33,7 +33,7 @@
                 v-if="verificationData.expired"
               />
               <div class="back-to-account my-10" v-if="verificationData.expired">
-                <router-link to="/" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition duration-150 ease-in-out">
+                <router-link to="/" class="group button-primary">
                   Back to Login
                 </router-link>
               </div>
